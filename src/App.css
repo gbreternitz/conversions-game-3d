@@ -6,7 +6,7 @@ html, body, #root {
   overflow: hidden;
 }
 
-/* Main layout: Sidebar on left, canvas centered */
+/* Layout: Sidebar on left, canvas centered */
 .app-container {
   display: flex;
   height: 100vh;
@@ -44,15 +44,15 @@ canvas {
   display: block;
 }
 
-/* Confirm selection modal: positioned to the top-right */
+/* Confirm modal: fixed at top-right */
 .confirm-modal-overlay {
   position: fixed;
   top: 10%;
-  right: 5%;
+  left: 25%;
   z-index: 10;
 }
 
-/* Game over modal: covers the full viewport and centers content */
+/* Game over modal: full-screen overlay, centered content */
 .gameover-modal-overlay {
   position: fixed;
   top: 0;

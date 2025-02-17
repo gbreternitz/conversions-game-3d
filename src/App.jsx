@@ -6,14 +6,14 @@ import "./App.css";
 // Generate a random full name by combining a first and last name.
 const randomName = () => {
   const firstNames = [
-    "Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Gabi",
+    "Alice", "Bob", "Cory", "Diana", "Eve", "Frank", "Gabi",
     "Hank", "Ivy", "Jack", "Kathy", "Leo", "Martha", "Nate", "Olivia",
     "Pete", "Quincy", "Raquel", "Seth", "Tina", "Uma", "Victor", "Wendy",
     "Xander", "Yurm", "Zack"
   ];
   const lastNames = [
     "Knuckles", "Star", "Farndoogle", "Beets", "Sizzler", "Jambalaya", "Clementine",
-    "Alfalfa", "the Mensch", "Orbital", "Smoochers", "Hairpiece", "Ghibli",
+    "Alfalfa", "the Mensch", "Orbital", "Smoochers", "Hairpiece", "Wynn",
     "Twister", "Barbarella", "Estevez", "Bretz", "Padua", "Curry", "California"
   ];
   const first = firstNames[Math.floor(Math.random() * firstNames.length)];
@@ -22,7 +22,7 @@ const randomName = () => {
 }
 
 // Person component: builds a simple 3D person with randomized attributes.
-// The person is centered vertically so that its center aligns with the cell center.
+// The person is centered vertically so its center aligns with the cell center.
 function Person({ state, position }) {
   const attributes = useMemo(() => ({
     height: Math.random() * 1 + 1.5,       // torso height
@@ -33,14 +33,13 @@ function Person({ state, position }) {
     legLength: Math.random() * 0.5 + 0.9,
   }), []);
 
-  // Total height: legs + torso + head.
   const totalHeight = attributes.legLength + attributes.height + attributes.headSize;
   const centerOffset = totalHeight / 2;
 
   const color = state === "A" ? "red" : "blue";
 
   return (
-    // Offset the entire group so that its vertical center aligns with the cell center.
+    // Shift the person so its vertical center aligns with the cell center.
     <group position={[position[0], position[1] - centerOffset, position[2]]}>
       {/* Left leg */}
       <mesh position={[-0.2, attributes.legLength / 2, 0]}>
@@ -76,7 +75,8 @@ function Person({ state, position }) {
   );
 }
 
-// Initialize the 3D board. Each cell is an object { state, name }.
+// Initialize a 3D board (gridSize x gridSize x gridSize) with alternating states.
+// Each cell is an object: { state, name }.
 const initializeBoard3D = (size) => {
   const board = [];
   for (let x = 0; x < size; x++) {
@@ -94,7 +94,25 @@ const initializeBoard3D = (size) => {
   return board;
 };
 
-// 3D removal logic: check in 6 cardinal directions.
+// Helper: Given starting cell (x,y,z) and a direction (dx,dy,dz),
+// find the coordinates of the first non-empty neighbor, or return null.
+const findNeighbor = (board, x, y, z, dx, dy, dz) => {
+  const size = board.length;
+  let nx = x + dx, ny = y + dy, nz = z + dz;
+  while (nx >= 0 && nx < size && ny >= 0 && ny < size && nz >= 0 && nz < size) {
+    if (board[nx][ny][nz] !== "") {
+      return [nx, ny, nz];
+    }
+    nx += dx;
+    ny += dy;
+    nz += dz;
+  }
+  return null;
+};
+
+// checkDirection looks in a specified direction (dx, dy, dz)
+// from the cell at (x, y, z) and returns the state of the first non-empty cell it finds,
+// or "EDGE" if it reaches the edge of the board.
 const checkDirection = (board, x, y, z, dx, dy, dz) => {
   const size = board.length;
   let nx = x + dx, ny = y + dy, nz = z + dz;
@@ -109,8 +127,11 @@ const checkDirection = (board, x, y, z, dx, dy, dz) => {
   return "EDGE";
 };
 
+// shouldRemove checks if the cell at (x, y, z) should be removed.
+// It returns true if all the first non-empty neighbors in the 6 cardinal directions
+// either match the cell's state or if the neighbor is "EDGE" (i.e. the board's border).
 const shouldRemove = (board, x, y, z) => {
-  if (board[x][y][z] === "") return false;
+  if (board[x][y][z] === "") return false; // already removed
   const current = board[x][y][z].state;
   const directions = [
     [-1, 0, 0],
@@ -122,23 +143,27 @@ const shouldRemove = (board, x, y, z) => {
   ];
   for (let [dx, dy, dz] of directions) {
     const neighbor = checkDirection(board, x, y, z, dx, dy, dz);
-    if (neighbor !== "EDGE" && neighbor !== current) return false;
+    if (neighbor !== "EDGE" && neighbor !== current) {
+      return false;
+    }
   }
   return true;
 };
 
 const removeMatches = (boardInput) => {
   const size = boardInput.length;
-  // Deep copy board.
+  // Deep copy the board so that we don't mutate the original
   let board = boardInput.map((plane) =>
     plane.map((cell) => (cell !== "" ? { ...cell } : ""))
   );
   let totalRemoved = 0;
   let removedNames = [];
   let changed = true;
+
   while (changed) {
     changed = false;
     let toRemove = [];
+    // Iterate over every cell in the 3D board
     for (let x = 0; x < size; x++) {
       for (let y = 0; y < size; y++) {
         for (let z = 0; z < size; z++) {
@@ -150,6 +175,7 @@ const removeMatches = (boardInput) => {
     }
     if (toRemove.length > 0) {
       changed = true;
+      // Remove each cell that met the criteria
       for (let [x, y, z] of toRemove) {
         const cell = board[x][y][z];
         if (cell !== "") {
@@ -163,26 +189,30 @@ const removeMatches = (boardInput) => {
   return { board, removedCount: totalRemoved, removedNames };
 };
 
+
 function App() {
-  const gridSize = 2;
+  const gridSize = 3;
   const [board, setBoard] = useState(initializeBoard3D(gridSize));
-  // pendingSelection holds [x, y, z] for the cell that was clicked.
+  // pendingSelection: [x, y, z] for the clicked cell.
   const [pendingSelection, setPendingSelection] = useState(null);
-  // Scoreboard: record converted names for each player.
+  // Scoreboard: record names converted by each player.
   const [scoreboard, setScoreboard] = useState({ P1: [], P2: [] });
   const [currentPlayer, setCurrentPlayer] = useState(1);
   const [gameOver, setGameOver] = useState(false);
 
-  // When a cell is clicked, mark it as pending if it hasn't been removed.
+  // When a cell is clicked, mark it as pending (if it hasn't been removed).
   const handleCellClick = (x, y, z) => {
     if (board[x][y][z] === "") return;
     setPendingSelection([x, y, z]);
   };
 
-  // Toggle the state at cell (x, y, z), run removal logic, update scoreboard, and switch players.
+  // Toggle the state at cell (x,y,z), run removal logic, update scoreboard, and switch players.
   const handleConfirm = () => {
     if (!pendingSelection) return;
     const [x, y, z] = pendingSelection;
+    console.log("Confirm clicked for cell:", pendingSelection); // Debug log
+  
+    // Create a deep copy of the board.
     const newBoard = board.map((plane) =>
       plane.map((cell) => (cell !== "" ? { ...cell } : ""))
     );
@@ -191,9 +221,16 @@ function App() {
       ...newBoard[x][y][z],
       state: newBoard[x][y][z].state === "A" ? "B" : "A",
     };
+  
     // Run removal logic.
     const removalResult = removeMatches(newBoard);
-    // Update scoreboard for current player.
+    // If removal logic doesn't remove the toggled cell,
+    // ensure that the toggled cell remains toggled.
+    if (newBoard[x][y][z].state !== removalResult.board[x][y][z]?.state) {
+      console.log("Removal logic changed toggled cell state unexpectedly");
+    }
+  
+    // Update the scoreboard for the current player.
     setScoreboard((prev) => {
       const newScore = { ...prev };
       if (currentPlayer === 1) {
@@ -203,9 +240,9 @@ function App() {
       }
       return newScore;
     });
-    // Update board.
+  
+    // Update board and switch players.
     setBoard(removalResult.board);
-    // Switch players.
     setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
     setPendingSelection(null);
   };
@@ -223,20 +260,48 @@ function App() {
     }
   }, [scoreboard, gridSize]);
 
-  // Render the 3D grid. Only render cells that are not empty.
+  // When a cell is pending, compute its neighbor coordinates (for 6 directions) that are not empty.
+  const computeNeighborHighlights = () => {
+    if (!pendingSelection) return [];
+    const directions = [
+      [-1, 0, 0],
+      [1, 0, 0],
+      [0, -1, 0],
+      [0, 1, 0],
+      [0, 0, -1],
+      [0, 0, 1],
+    ];
+    const [sx, sy, sz] = pendingSelection;
+    let neighbors = [];
+    for (let [dx, dy, dz] of directions) {
+      const neighbor = findNeighbor(board, sx, sy, sz, dx, dy, dz);
+      if (neighbor) {
+        neighbors.push(neighbor);
+      }
+    }
+    return neighbors;
+  };
+
+  // Render the 3D grid.
   const renderBoard = () => {
     const objects = [];
     const cellSize = 10;
     const offset = (gridSize - 1) / 2;
+    // Compute neighbor coordinates for highlighting.
+    const neighborHighlights = computeNeighborHighlights().map(
+      ([nx, ny, nz]) => `${nx}-${ny}-${nz}`
+    );
     for (let x = 0; x < gridSize; x++) {
       for (let y = 0; y < gridSize; y++) {
         for (let z = 0; z < gridSize; z++) {
+          // Skip rendering if the cell is removed.
           if (board[x][y][z] === "") continue;
           const posX = (x - offset) * cellSize;
           const posY = (y - offset) * cellSize;
           const posZ = (z - offset) * cellSize;
+          const cellKey = `${x}-${y}-${z}`;
           objects.push(
-            <group key={`${x}-${y}-${z}`}>
+            <group key={cellKey}>
               <Person
                 state={board[x][y][z].state}
                 position={[posX, posY, posZ]}
@@ -252,16 +317,26 @@ function App() {
                 <boxGeometry args={[cellSize * 0.5, cellSize * 0.5, cellSize * 0.5]} />
                 <meshBasicMaterial transparent opacity={0} />
               </mesh>
-              {/* Yellow outline for pending selection */}
+              {/* Outline for pending selection (yellow) */}
               {pendingSelection &&
                 pendingSelection[0] === x &&
                 pendingSelection[1] === y &&
                 pendingSelection[2] === z && (
                   <mesh position={[posX, posY, posZ]}>
                     <boxGeometry args={[cellSize * 0.95, cellSize * 0.95, cellSize * 0.95]} />
-                    <meshBasicMaterial color="yellow" wireframe />
+                    <meshBasicMaterial color="yellow" transparent opacity={0.4} depthWrite={false} />
                   </mesh>
                 )}
+              {/* Outline for neighbors */}
+              {neighborHighlights.includes(cellKey) && (
+                <mesh position={[posX, posY, posZ]}>
+                  <boxGeometry args={[cellSize * 0.95, cellSize * 0.95, cellSize * 0.95]} />
+                  <meshBasicMaterial
+                    color={board[x][y][z].state === "A" ? "red" : "blue"}
+                    transparent opacity={0.3} depthWrite={false}
+                  />
+                </mesh>
+              )}
             </group>
           );
         }
@@ -270,7 +345,7 @@ function App() {
     return objects;
   };
 
-  // Render the confirm selection modal (placed in the top-right).
+  // Render a confirm modal for the pending selection (top-right).
   const renderConfirmModal = () => {
     if (!pendingSelection) return null;
     const [x, y, z] = pendingSelection;
@@ -278,7 +353,7 @@ function App() {
     return (
       <div className="confirm-modal-overlay">
         <div className="modal-content">
-        <p>Player {currentPlayer} converts {cell.name}?</p>
+          <p>Player {currentPlayer} converts {cell.name}?</p>
           <button onClick={handleConfirm}>Confirm</button>
           <button onClick={handleCancel}>Cancel</button>
         </div>
@@ -286,7 +361,7 @@ function App() {
     );
   };
 
-  // Render the game over modal (centered) with final score and a New Game button.
+  // Render the game-over modal (centered) with final score and a New Game button.
   const renderGameOverModal = () => {
     if (!gameOver) return null;
     const countP1 = scoreboard.P1.length;
@@ -341,9 +416,18 @@ function App() {
           </ul>
         </div>
         <div>
-          <h3>Turn</h3>
+          <h3>Current Turn</h3>
           <p>
             <strong>Player {currentPlayer}'s Turn</strong>
+          </p>
+        </div>
+        <div>
+          <h3>Instructions</h3>
+          <p>
+            <ol>Players alternate turns by selecting a townsfolk to convert.</ol>
+            <ol>Townsfolk surrounded by likeminded neighbors in all six cardinal directions are collected by the player.</ol>
+            <ol>Chain reactions may occur.</ol>
+            <ol>The winner has collected the most townsfolk by the end of the game</ol>
           </p>
         </div>
       </div>
@@ -355,7 +439,7 @@ function App() {
       {renderScoreboard()}
       <div className="canvas-container">
         <Canvas
-          camera={{ position: [100, 100, 100], fov: 60, near: 0.1, far: 2000 }}
+          camera={{ position: [35, 35, 35], fov: 60, near: 0.1, far: 2000 }}
         >
           <ambientLight intensity={0.6} />
           <directionalLight intensity={1} position={[100, 100, 100]} />
