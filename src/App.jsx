@@ -199,6 +199,7 @@ function App() {
   const [scoreboard, setScoreboard] = useState({ P1: [], P2: [] });
   const [currentPlayer, setCurrentPlayer] = useState(1);
   const [gameOver, setGameOver] = useState(false);
+  const [scoreboardVisible, setScoreboardVisible] = useState(true);
 
   // When a cell is clicked, mark it as pending (if it hasn't been removed).
   const handleCellClick = (x, y, z) => {
@@ -436,10 +437,16 @@ function App() {
 
   return (
     <div className="app-container">
-      {renderScoreboard()}
+      {scoreboardVisible && renderScoreboard()}
       <div className="canvas-container">
+        <button 
+          className="toggle-scoreboard-button"
+          onClick={() => setScoreboardVisible(!scoreboardVisible)}
+        >
+          {scoreboardVisible ? "Hide Scoreboard" : "Show Scoreboard"}
+        </button>
         <Canvas
-          camera={{ position: [35, 35, 35], fov: 60, near: 0.1, far: 2000 }}
+          camera={{ position: [100, 100, 100], fov: 60, near: 0.1, far: 2000 }}
         >
           <ambientLight intensity={0.6} />
           <directionalLight intensity={1} position={[100, 100, 100]} />
