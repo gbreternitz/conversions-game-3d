@@ -1,21 +1,27 @@
 // src/components/Person.jsx
 import React, { useMemo } from "react";
 import { animated, useSpring } from "@react-spring/three";
+import { Text, Billboard } from "@react-three/drei";
 
-function Person({ state, position, removing, onAnimationComplete }) {
-  const attributes = useMemo(() => ({
-    height: Math.random() * 1 + 1.5,
-    shoulders: Math.random() * 0.7 + 0.1,
-    hips: Math.random() * 0.7 + 0.1,
-    headSize: Math.random() * 0.3 + 0.4,
-    armLength: Math.random() * 0.5 + 0.8,
-    legLength: Math.random() * 0.5 + 0.9,
-  }), []);
+function Person({ state, position, removing, onAnimationComplete, name }) {
+  const attributes = useMemo(
+    () => ({
+      height: Math.random() * 1 + 1.5,       // torso height
+      shoulders: Math.random() * 0.7 + 0.1,
+      hips: Math.random() * 0.7 + 0.1,
+      headSize: Math.random() * 0.3 + 0.4,
+      armLength: Math.random() * 0.5 + 0.8,
+      legLength: Math.random() * 0.5 + 0.9,
+    }),
+    []
+  );
 
-  const totalHeight = attributes.legLength + attributes.height + attributes.headSize;
+  const totalHeight =
+    attributes.legLength + attributes.height + attributes.headSize;
   const centerOffset = totalHeight / 2;
   const color = state === "A" ? "red" : "blue";
 
+  // Animate a full spin and fade-out when "removing" is true.
   const { rotation, opacity } = useSpring({
     to: {
       rotation: removing ? [0, Math.PI * 2, 0] : [0, 0, 0],
@@ -67,6 +73,18 @@ function Person({ state, position, removing, onAnimationComplete }) {
           <meshStandardMaterial color={color} />
         </mesh>
       </animated.group>
+      {/* Render the character's name floating above */}
+      <Billboard>
+        <Text
+            position={[0, - (attributes.legLength + attributes.height + attributes.headSize )*.3, 0]}
+            fontSize={0.5}
+            color="black"
+            anchorX="center"
+            anchorY="middle"
+        >
+            {name}
+        </Text>
+      </Billboard>
     </animated.group>
   );
 }

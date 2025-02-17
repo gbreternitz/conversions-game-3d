@@ -30,6 +30,7 @@ const Board = ({
               state={board[x][y][z].state}
               position={[posX, posY, posZ]}
               removing={board[x][y][z].removing || false}
+              name={board[x][y][z].name} 
               onAnimationComplete={() => {
                 setBoard((prevBoard) => {
                   const newBoard = prevBoard.map((plane) => plane.slice());

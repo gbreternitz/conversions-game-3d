@@ -1,10 +1,10 @@
 // src/utils/boardUtils.js
 export const randomName = () => {
     const firstNames = [
-      "Alice", "Bob", "Cory", "Diana", "Eve", "Frank", "Gabi", "Gloria",
+      "Alice", "Bob", "Cory", "Diana", "Eric", "Frank", "Gabi", "Gloria",
       "Heisenberg", "Ivy", "Jack", "Kathy", "Leo", "Martha", "Nate", "Olivia",
       "Pete", "Quincy", "Raquel", "Seth", "Tina", "Uma", "Victor", "Wendy",
-      "Xander", "Yurm", "Zack", "Zinedine"
+      "Xander", "Yurm", "Zack", "Zinedine", "Rupert", "Artur", "Lily", 
     ];
     const lastNames = [
       "Knuckles", "Star", "Farndoogle", "Beets", "Sizzler", "Jambalaya", "Clementine",
