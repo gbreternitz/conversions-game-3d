@@ -1,0 +1,73 @@
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Main layout: Sidebar on left, canvas centered */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.scoreboard {
+  width: 300px;
+  padding: 20px;
+  background: #eee;
+  overflow-y: auto;
+  border-right: 1px solid #ccc;
+}
+
+.scoreboard h2,
+.scoreboard h3 {
+  margin: 0 0 10px 0;
+  padding: 0;
+}
+
+.scoreboard ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.canvas-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f0f0f0;
+}
+
+canvas {
+  display: block;
+}
+
+/* Confirm selection modal: positioned to the top-right */
+.confirm-modal-overlay {
+  position: fixed;
+  top: 10%;
+  right: 5%;
+  z-index: 10;
+}
+
+/* Game over modal: covers the full viewport and centers content */
+.gameover-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
