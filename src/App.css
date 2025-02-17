@@ -99,3 +99,30 @@ canvas {
     margin: 0 auto;
   }
 }
+
+/* Position the toggle button inside the canvas container (or adjust as needed) */
+.toggle-scoreboard-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 5;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+  
+  /* Hide the scoreboard by default on mobile */
+  .scoreboard {
+    display: none;
+  }
+  
+  /* When toggled visible, we show it */
+  .app-container.show-scoreboard .scoreboard {
+    display: block;
+  }
+}
