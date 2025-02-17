@@ -6,13 +6,14 @@ html, body, #root {
   overflow: hidden;
 }
 
-/* Layout: Sidebar on left, canvas centered */
+/* Main layout for larger screens: Sidebar on left, canvas centered */
 .app-container {
   display: flex;
   height: 100vh;
   width: 100vw;
 }
 
+/* Sidebar styling for large screens */
 .scoreboard {
   width: 300px;
   padding: 20px;
@@ -21,17 +22,7 @@ html, body, #root {
   border-right: 1px solid #ccc;
 }
 
-.scoreboard h2,
-.scoreboard h3 {
-  margin: 0 0 10px 0;
-  padding: 0;
-}
-
-.scoreboard ul {
-  list-style: none;
-  padding-left: 0;
-}
-
+/* Canvas container takes remaining space */
 .canvas-container {
   flex-grow: 1;
   display: flex;
@@ -44,15 +35,15 @@ canvas {
   display: block;
 }
 
-/* Confirm modal: fixed at top-right */
+/* Confirm modal remains in the top-right for large screens */
 .confirm-modal-overlay {
   position: fixed;
   top: 10%;
-  left: 25%;
+  right: 5%;
   z-index: 10;
 }
 
-/* Game over modal: full-screen overlay, centered content */
+/* Game over modal centered */
 .gameover-modal-overlay {
   position: fixed;
   top: 0;
@@ -70,4 +61,41 @@ canvas {
   padding: 20px;
   border: 1px solid #ccc;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  /* Change the layout: stack sidebar above canvas */
+  .app-container {
+    flex-direction: column;
+  }
+  
+  .scoreboard {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .canvas-container {
+    flex-grow: 1;
+  }
+  
+  /* For modals on small screens, you might want them full-width or near the bottom */
+  .confirm-modal-overlay {
+    top: auto;
+    bottom: 10%;
+    right: 50%;
+    transform: translateX(50%);
+  }
+  
+  .gameover-modal-overlay {
+    /* Possibly use a full-screen modal that leaves small padding */
+    padding: 20px;
+  }
+  
+  .modal-content {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
 }
