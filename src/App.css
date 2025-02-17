@@ -14,10 +14,12 @@ html, body, #root {
   width: 100vw;
 }
 
-/* Scoreboard styling */
 .scoreboard {
-  width: 300px;
-  padding: 20px;
+  flex: 1 1 25%;
+  max-width: 300px;
+  min-width: 200px; /* Ensure it never becomes too narrow */
+  min-height: 200px; /* Ensure a minimum height so content is visible */
+  padding: 1rem;
   background: #eee;
   overflow-y: auto;
   border-right: 1px solid #ccc;
@@ -37,8 +39,8 @@ html, body, #root {
 
 /* Canvas container takes the remaining space */
 .canvas-container {
-  flex-grow: 1;
-  position: relative;  /* needed for absolutely positioned toggle button */
+  flex: 3 1 75%;   /* Let the canvas take more space */
+  position: relative; /* For positioning the toggle button */
   display: flex;
   justify-content: center;
   align-items: center;
