@@ -1,3 +1,4 @@
+/* Reset and full viewport settings */
 html, body, #root {
   margin: 0;
   padding: 0;
@@ -6,14 +7,14 @@ html, body, #root {
   overflow: hidden;
 }
 
-/* Main layout for larger screens: Sidebar on left, canvas centered */
+/* Main app container: displays scoreboard and canvas side-by-side on large screens */
 .app-container {
   display: flex;
   height: 100vh;
   width: 100vw;
 }
 
-/* Sidebar styling for large screens */
+/* Scoreboard styling */
 .scoreboard {
   width: 300px;
   padding: 20px;
@@ -22,20 +23,49 @@ html, body, #root {
   border-right: 1px solid #ccc;
 }
 
-/* Canvas container takes remaining space */
+/* Scoreboard headings and list */
+.scoreboard h2,
+.scoreboard h3 {
+  margin: 0 0 10px 0;
+  padding: 0;
+}
+
+.scoreboard ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+/* Canvas container takes the remaining space */
 .canvas-container {
   flex-grow: 1;
+  position: relative;  /* needed for absolutely positioned toggle button */
   display: flex;
   justify-content: center;
   align-items: center;
   background: #f0f0f0;
 }
 
+/* Ensure the canvas fills its container */
 canvas {
   display: block;
+  width: 100%;
+  height: 100%;
 }
 
-/* Confirm modal remains in the top-right for large screens */
+/* Toggle scoreboard button */
+.toggle-scoreboard-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 5;
+  padding: 8px 12px;
+  font-size: 14px;
+  background: #fff;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+/* Confirm selection modal: fixed at top-right */
 .confirm-modal-overlay {
   position: fixed;
   top: 10%;
@@ -43,7 +73,7 @@ canvas {
   z-index: 10;
 }
 
-/* Game over modal centered */
+/* Game over modal: full-screen overlay with centered content */
 .gameover-modal-overlay {
   position: fixed;
   top: 0;
@@ -56,6 +86,7 @@ canvas {
   z-index: 20;
 }
 
+/* Modal content common styling */
 .modal-content {
   background: white;
   padding: 20px;
@@ -63,9 +94,8 @@ canvas {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Responsive adjustments for smaller screens */
+/* Responsive adjustments: on narrow screens, stack layout */
 @media (max-width: 768px) {
-  /* Change the layout: stack sidebar above canvas */
   .app-container {
     flex-direction: column;
   }
@@ -80,49 +110,9 @@ canvas {
     flex-grow: 1;
   }
   
-  /* For modals on small screens, you might want them full-width or near the bottom */
-  .confirm-modal-overlay {
-    top: auto;
-    bottom: 10%;
-    right: 50%;
-    transform: translateX(50%);
-  }
-  
-  .gameover-modal-overlay {
-    /* Possibly use a full-screen modal that leaves small padding */
-    padding: 20px;
-  }
-  
-  .modal-content {
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
-  }
-}
-
-/* Position the toggle button inside the canvas container (or adjust as needed) */
-.toggle-scoreboard-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 5;
-  padding: 8px 12px;
-  font-size: 14px;
-}
-
-/* Responsive adjustments for mobile */
-@media (max-width: 768px) {
-  .app-container {
-    flex-direction: column;
-  }
-  
-  /* Hide the scoreboard by default on mobile */
-  .scoreboard {
-    display: none;
-  }
-  
-  /* When toggled visible, we show it */
-  .app-container.show-scoreboard .scoreboard {
-    display: block;
+  /* Optionally reposition toggle button on mobile */
+  .toggle-scoreboard-button {
+    top: 10px;
+    right: 10px;
   }
 }

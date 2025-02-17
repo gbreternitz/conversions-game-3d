@@ -435,29 +435,30 @@ function App() {
     );
   };
 
-  return (
-    <div className="app-container">
-      {scoreboardVisible && renderScoreboard()}
-      <div className="canvas-container">
-        <button 
-          className="toggle-scoreboard-button"
-          onClick={() => setScoreboardVisible(!scoreboardVisible)}
-        >
-          {scoreboardVisible ? "Hide Scoreboard" : "Show Scoreboard"}
-        </button>
-        <Canvas
-          camera={{ position: [100, 100, 100], fov: 60, near: 0.1, far: 2000 }}
-        >
-          <ambientLight intensity={0.6} />
-          <directionalLight intensity={1} position={[100, 100, 100]} />
-          {renderBoard()}
-          <OrbitControls enablePan={false} />
-        </Canvas>
-      </div>
-      {renderConfirmModal()}
-      {renderGameOverModal()}
+  // inside your App component's return:
+return (
+  <div className="app-container">
+    {scoreboardVisible && renderScoreboard()}
+    <div className="canvas-container">
+      <button 
+        className="toggle-scoreboard-button"
+        onClick={() => setScoreboardVisible(!scoreboardVisible)}
+      >
+        {scoreboardVisible ? "Hide Scoreboard" : "Show Scoreboard"}
+      </button>
+      <Canvas
+        camera={{ position: [35, 35, 35], fov: 60, near: 0.2, far: 2000 }}
+      >
+        <ambientLight intensity={0.6} />
+        <directionalLight intensity={1} position={[100, 100, 100]} />
+        {renderBoard()}
+        <OrbitControls enablePan={false} />
+      </Canvas>
     </div>
-  );
+    {renderConfirmModal()}
+    {renderGameOverModal()}
+  </div>
+);
 }
 
 export default App;
