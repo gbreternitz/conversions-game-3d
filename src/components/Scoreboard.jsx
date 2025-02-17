@@ -29,10 +29,11 @@ const Scoreboard = ({ scoreboard, currentPlayer }) => {
       </div>
       <div>
         <h3>Instructions</h3>
-            <p>Players alternate turns by selecting a townsfolk to convert.</p>
-            <p>Townsfolk surrounded by likeminded neighbors in all six cardinal directions are collected by the player.</p>
+            <p>Scroll to zoom in and out. Click and drag to rotate.</p>
+            <p>Players alternate turns by selecting a person to convert.</p>
+            <p>A person surrounded by likeminded neighbors in all six cardinal directions disappear and count towards the player's score.</p>
             <p>Chain reactions may occur.</p>
-            <p>The winner has collected the most townsfolk by the end of the game.</p>
+            <p>The player with the most people in their stash wins.</p>
       </div>
     </div>
   );

@@ -4,12 +4,14 @@ export const randomName = () => {
       "Alice", "Bob", "Cory", "Diana", "Eric", "Frank", "Gabi", "Gloria",
       "Heisenberg", "Ivy", "Jack", "Kathy", "Leo", "Martha", "Nate", "Olivia",
       "Pete", "Quincy", "Raquel", "Seth", "Tina", "Uma", "Victor", "Wendy",
-      "Xander", "Yurm", "Zack", "Zinedine", "Rupert", "Artur", "Lily", 
+      "Xander", "Yurm", "Zack", "Zinedine", "Rupert", "Artur", "Lily", "Jellybean",
+      "Sprinkle","Buzz","Woody","Charmander", "Scallop", "Poppy", "Rutherford", "Chip", "Captain", "Agent", "Dirty", "Clean"
     ];
     const lastNames = [
       "Knuckles", "Star", "Farndoogle", "Beets", "Sizzler", "Jambalaya", "Clementine",
       "Alfalfa", "the Mensch", "Orbital", "Smoochers", "Hairpiece", "Wynn",
-      "Twister", "Barbarella", "Estevez", "Bretz", "Padua", "Curry", "California", "Gasolina"
+      "Twister", "Barbarella", "Estevez", "Bretz", "Padua", "Curry", "California", "Gasolina", "Fields",
+       "Dream", "XCX", "Royal", "Alabama", "Scruff", "ChooChoo", "Waffle", "Rambo", "Twerp"
     ];
     const first = firstNames[Math.floor(Math.random() * firstNames.length)];
     const last = lastNames[Math.floor(Math.random() * lastNames.length)];

@@ -11,7 +11,7 @@ import {
 import "./App.css";
 
 function App() {
-  const gridSize = 3;
+  const gridSize = 4;
   const [board, setBoard] = useState(initializeBoard3D(gridSize));
   const [pendingSelection, setPendingSelection] = useState(null);
   const [scoreboard, setScoreboard] = useState({ P1: [], P2: [] });
